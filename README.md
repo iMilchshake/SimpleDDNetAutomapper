@@ -5,8 +5,7 @@
 
 # NOTE
 WIP (work in progress). This tool isn't ready yet to be announced to the public, but it 
-reached the alpha stage. If you encounter bugs or experience crashes, please don't report them yet as this software
-has still a lot of loose ends.
+reached the alpha stage.
 
 That beeing said, if you want to test it and create automapper rules, edit your `config.yml` and enter
 - `client_path`(optional): The absolute path to your ddnet client (On windows this is ddnet.exe) 
@@ -16,6 +15,11 @@ That beeing said, if you want to test it and create automapper rules, edit your 
 
 # Simple DDNet Automapper App
 A simple tool to create automapping files for ddnet with a graphical user interface
+
+## Download
+
+_Give me a bloody exe:_
+[https://github.com/AssassinTee/SimpleDDNetAutomapper/releases/latest](https://github.com/AssassinTee/SimpleDDNetAutomapper/releases/latest)
 
 ## Installation
 
