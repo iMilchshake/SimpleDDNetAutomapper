@@ -43,10 +43,10 @@ class BaseTile(QLabel):
                 if self.tile_data.status.rot:
                     transform.rotate(90)  # fixed 90 degrees always, but can also flip, too!
 
-                if self.tile_data.status.h_flip:
+                if self.tile_data.status.y_flip:
                     transform = transform.scale(1, -1)
 
-                if self.tile_data.status.v_flip:
+                if self.tile_data.status.x_flip:
                     transform = transform.scale(-1, 1)
 
                 transform.translate(-pm.width() // 2, -pm.height() // 2)

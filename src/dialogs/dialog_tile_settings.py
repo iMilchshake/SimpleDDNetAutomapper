@@ -90,10 +90,10 @@ class TileSettingsDialog(QDialog):
     def onModificationChange(self, modification: int, value: bool):
         match modification:
             case 0:
-                self._tile_data.mods.can_v_flip = value
+                self._tile_data.mods.can_x_flip = value
                 return
             case 1:
-                self._tile_data.mods.can_h_flip = value
+                self._tile_data.mods.can_y_flip = value
                 return
             case 2:
                 self._tile_data.mods.can_rot = value

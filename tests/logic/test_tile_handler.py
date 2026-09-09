@@ -111,8 +111,8 @@ class TestTileHandler:
 
         # disable rotating and flipping
         tile.tile_data.mods.can_rot = not tile.tile_data.mods.can_rot
-        tile.tile_data.mods.can_v_flip = not tile.tile_data.mods.can_v_flip
-        tile.tile_data.mods.can_h_flip = not tile.tile_data.mods.can_h_flip
+        tile.tile_data.mods.can_x_flip = not tile.tile_data.mods.can_x_flip
+        tile.tile_data.mods.can_y_flip = not tile.tile_data.mods.can_y_flip
         TileHandler.instance().updateTileStorage(tile)
         neighborhood_entry_list = TileHandler.instance().findTiles(tile.tile_data.con)
         num_matches3 = len(neighborhood_entry_list)

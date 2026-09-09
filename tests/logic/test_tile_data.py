@@ -10,13 +10,13 @@ class TestTileData:
     @staticmethod
     def create_tile_data(neighbors, status, mods) -> TileData:
         ts = TileStatus()
-        ts.v_flip = status[0]
-        ts.h_flip = status[1]
+        ts.x_flip = status[0]
+        ts.y_flip = status[1]
         ts.rot = status[2]
         ts.empty = status[3]
         return TileData(TileConnection(neighbors),
                         ts,
-                        TileMods(mods[0], mods[1], mods[2]))
+                        TileMods(can_x_flip=mods[0], can_y_flip=mods[1], can_rot=mods[2]))
 
     @staticmethod
     def tile_data_list(create_tile_data):
@@ -25,8 +25,8 @@ class TestTileData:
             create_tile_data([2, 1, 2, 0, 0, 2, 0, 2], [False, False, False, False], [False, False, True]),
             create_tile_data([0, 1, 2, 0, 1, 2, 0, 1], [False, False, False, False], [True, True, False]),
             create_tile_data([0, 1, 0, 0, 0, 0, 0, 0], [False, False, False, True], [True, True, False]),
-            create_tile_data([0, 1, 0, 0, 0, 0, 0, 0], [False, False, False, True], [False, True, False]),
-            create_tile_data([0, 0, 0, 1, 0, 0, 0, 0], [False, False, False, True], [True, False, False]),
+            create_tile_data([0, 1, 0, 0, 0, 0, 0, 0], [False, False, False, True], [True, False, False]),
+            create_tile_data([0, 0, 0, 1, 0, 0, 0, 0], [False, False, False, True], [False, True, False]),
             create_tile_data([2, 1, 2, 0, 0, 2, 0, 2], [False, False, False, False], [False, False, False]),
             create_tile_data([1, 0, 1, 0, 0, 1, 0, 1], [False, False, False, False], [False, False, True]),
             create_tile_data([2, 2, 2, 2, 2, 2, 2, 2], [True, True, True, False], [True, True, True]),
@@ -41,9 +41,9 @@ class TestTileData:
             1,  # no modifications
             4,  # only rotations
             4,  # fliph and flipv
-            2,  # only vflip does something
-            1,  # hflip doesn't do anything
-            1,  # vflip doesn't do anything
+            2,  # only yflip does something
+            1,  # xflip doesn't do anything
+            1,  # yflip doesn't do anything
             1,  # none
             1,  # rotating doesn't do anything
             1,  # fliph, flipv and rot, but nothing changes a thing

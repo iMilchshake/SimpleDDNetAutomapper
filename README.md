@@ -53,11 +53,11 @@ TODO: Do a proper guide, guide below is just for a minimal product
       - FULL: This neighbor of the (middle) tile is FULL, not EMPTY
       - EMPTY: This neighbor of the (middle) tile is EMPTY, not FULL
       - ANY: This neighbor of the (middle)tile is EMPTY or FULL
-    - select rotation/hflip/vflip, don't use empty yet
-      - rotation: This (middle) tile can be rotated
-      - hflip: This (middle) tile can be flipped horizontally (on the X axis)
-      - vflip: This (middle) tile can be flipped vertically (on the Y axis)
-      - empty: Not yet ready for usuage, FUTURE: Allows (middle) tile to be EMPTY
+    - select Rotate/X-Flip/Y-Flip, don't use Empty yet
+      - Rotate: This (middle) tile can be rotated
+      - X-Flip: This (middle) tile can be mirrored left <-> right (written as `XFLIP`)
+      - Y-Flip: This (middle) tile can be mirrored top <-> bottom (written as `YFLIP`)
+      - Empty: Not yet ready for usuage, FUTURE: Allows (middle) tile to be EMPTY
     - remove a configured tile with right click
 3. Name your rule (top right, `Name Mapping Rule`)
 4. Press `Generate`, this will test your mapping rules, press `Ok` and your mapping rules will automatically be saved

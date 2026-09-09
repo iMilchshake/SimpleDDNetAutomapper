@@ -2,6 +2,7 @@ import tempfile
 
 import twmap
 import numpy as np
+from src.backend.tile_status import TileStatus
 from src.config.app_state import AppState
 from pathlib import Path
 from src.dialogs.dialog_check_map import CheckMapDialog
@@ -42,7 +43,7 @@ class MapGenerator:
                 if tile:
                     tile_layer_map[y, x, 0] = tile.tile_id
                 if status:
-                    tile_layer_map[y, x, 1] = MapGenerator._encodeBits(status.h_flip, status.v_flip, status.rot)
+                    tile_layer_map[y, x, 1] = MapGenerator._encodeBits(status)
         tile_layer.tiles = tile_layer_map
 
         # save map
@@ -53,9 +54,10 @@ class MapGenerator:
         pass
 
     @staticmethod
-    def _encodeBits(h_flip: bool, v_flip: bool, rot: bool) -> int:
+    def _encodeBits(status: TileStatus) -> int:
+        """DDNet tile flag byte: bit0 XFLIP, bit1 YFLIP, bit3 ROTATE"""
         ret: int = 0
-        ret += (rot << 3)
-        ret += (h_flip << 1)
-        ret += v_flip
+        ret += (status.rot << 3)
+        ret += (status.y_flip << 1)
+        ret += status.x_flip
         return ret

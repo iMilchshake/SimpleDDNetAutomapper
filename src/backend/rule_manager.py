@@ -112,8 +112,8 @@ class RuleManager:
     @staticmethod
     def _createIndexRule(tile_id: int, tile_status: TileStatus):
         str_index = f"Index {tile_id}"
-        str_x_flip = " XFLIP" if tile_status.v_flip else ""
-        str_y_flip = " YFLIP" if tile_status.h_flip else ""
+        str_x_flip = " XFLIP" if tile_status.x_flip else ""
+        str_y_flip = " YFLIP" if tile_status.y_flip else ""
         str_rotate = " ROTATE" if tile_status.rot else ""
         return f"{str_index}{str_x_flip}{str_y_flip}{str_rotate}"
 

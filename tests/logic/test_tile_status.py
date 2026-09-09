@@ -8,10 +8,10 @@ class TestTileStatus:
         TileStatus()
 
     @staticmethod
-    def create_tile_status(v_flip, h_flip, rot, empty) -> TileStatus:
+    def create_tile_status(x_flip, y_flip, rot, empty) -> TileStatus:
         t = TileStatus()
-        t.v_flip = v_flip
-        t.h_flip = h_flip
+        t.x_flip = x_flip
+        t.y_flip = y_flip
         t.rot = rot
         t.empty = empty
         return t
@@ -31,9 +31,9 @@ class TestTileStatus:
         t2 = status.__copy__()
         assert t2 == status
         assert id(t2) != id(status)
-        t2.h_flip = not t2.h_flip
+        t2.y_flip = not t2.y_flip
         assert t2 != status
-        t2.h_flip = not t2.h_flip
+        t2.y_flip = not t2.y_flip
         assert t2 == status
 
     @pytest.mark.parametrize("status", status_list(create_tile_status))
@@ -43,18 +43,18 @@ class TestTileStatus:
         assert rot_status.rot != rot
         assert status == status.rotate().rotate().rotate().rotate()
         # sanity check
-        assert status.rotate().rotate() == status.vFlip().hFlip()
+        assert status.rotate().rotate() == status.xFlip().yFlip()
 
     @pytest.mark.parametrize("status", status_list(create_tile_status))
-    def test_v_flip(self, status):
-        t = status.vFlip()
+    def test_x_flip(self, status):
+        t = status.xFlip()
         assert t != status
-        assert t.v_flip != status.v_flip
+        assert t.x_flip != status.x_flip
         assert id(t) != id(status)
 
     @pytest.mark.parametrize("status", status_list(create_tile_status))
-    def test_h_flip(self, status):
-        t = status.hFlip()
+    def test_y_flip(self, status):
+        t = status.yFlip()
         assert t != status
-        assert t.h_flip != status.h_flip
+        assert t.y_flip != status.y_flip
         assert id(t) != id(status)

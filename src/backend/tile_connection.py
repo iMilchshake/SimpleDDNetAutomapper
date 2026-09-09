@@ -60,14 +60,14 @@ class TileConnection:
             neighbors[to_swap[i]] = self._neighbors[i]
         return TileConnection(neighbors)
 
-    def vFlip(self) -> "TileConnection":
+    def xFlip(self) -> "TileConnection":
         neighbors = [0] * EIGHT_NEIGHBORS
         to_swap = [2, 1, 0, 4, 3, 7, 6, 5]  # TODO use enum
         for i in range(EIGHT_NEIGHBORS):
             neighbors[i] = self._neighbors[to_swap[i]]
         return TileConnection(neighbors)
 
-    def hFlip(self) -> "TileConnection":
+    def yFlip(self) -> "TileConnection":
         neighbors = [0] * EIGHT_NEIGHBORS
         to_swap = [5, 6, 7, 3, 4, 0, 1, 2]  # TODO use enum
         for i in range(EIGHT_NEIGHBORS):

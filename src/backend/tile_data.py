@@ -28,25 +28,25 @@ class TileData:
             con_list.extend(self._getPossibleModificationsRotation(self.con, self.status))
 
         # add h flip variants
-        if self.mods.can_h_flip:
-            con_list.append((self.con.hFlip(), self.status.hFlip()))
+        if self.mods.can_y_flip:
+            con_list.append((self.con.yFlip(), self.status.yFlip()))
             # include h flip rotated
             if self.mods.can_rot:
-                con_list.extend(self._getPossibleModificationsRotation(self.con.hFlip(), self.status.hFlip()))
+                con_list.extend(self._getPossibleModificationsRotation(self.con.yFlip(), self.status.yFlip()))
 
         # add v flip variants
-        if self.mods.can_v_flip:
-            con_list.append((self.con.vFlip(), self.status.vFlip()))
+        if self.mods.can_x_flip:
+            con_list.append((self.con.xFlip(), self.status.xFlip()))
             # include v flip rotated
             if self.mods.can_rot:
-                con_list.extend(self._getPossibleModificationsRotation(self.con.vFlip(), self.status.vFlip()))
+                con_list.extend(self._getPossibleModificationsRotation(self.con.xFlip(), self.status.xFlip()))
 
         # add v flip and h flip
-        if self.mods.can_v_flip and self.mods.can_h_flip:
-            con_list.append((self.con.vFlip().hFlip(), self.status.vFlip().hFlip()))
+        if self.mods.can_x_flip and self.mods.can_y_flip:
+            con_list.append((self.con.xFlip().yFlip(), self.status.xFlip().yFlip()))
             if self.mods.can_rot:
                 con_list.extend(
-                    self._getPossibleModificationsRotation(self.con.vFlip().hFlip(), self.status.vFlip().hFlip())
+                    self._getPossibleModificationsRotation(self.con.xFlip().yFlip(), self.status.xFlip().yFlip())
                 )
 
         # remove duplicates TODO all of this can be optimized
@@ -78,7 +78,7 @@ class TileData:
             # every modification state, e.g. rotating flipping, might have other neighborhood combinations
             neighborhoods = modified_state.getPossibleNeighborhoods()
             for neighborhood in neighborhoods:
-                # note, that for every modified state, the tile status, e.g. is_rotated, is_v_flipped is the same
+                # note, that for every modified state, the tile status, e.g. is_rotated, is_x_flipped is the same
                 all_possible_tile_states.append((neighborhood, status.__copy__()))
         return all_possible_tile_states
 

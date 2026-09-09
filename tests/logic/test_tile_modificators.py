@@ -37,5 +37,5 @@ class TestTileModificators:
         mod2 = mod.__copy__()
         assert mod == mod2
         assert id(mod) != id(mod2)
-        mod2.can_h_flip = not mod2.can_h_flip
+        mod2.can_y_flip = not mod2.can_y_flip
         assert mod != mod2

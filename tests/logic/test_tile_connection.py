@@ -152,24 +152,24 @@ class TestTileConnection:
         assert rot.encodeSmall() == rotated
 
     @pytest.mark.parametrize("neighbors", correct_neighbors())
-    def test_v_flip(self, neighbors):
+    def test_x_flip(self, neighbors):
         t = TileConnection(neighbors)
         t2 = t.__copy__()
-        assert t2.vFlip().vFlip() == t
-        assert t2.vFlip() == t.vFlip()
+        assert t2.xFlip().xFlip() == t
+        assert t2.xFlip() == t.xFlip()
 
     @pytest.mark.parametrize("neighbors", correct_neighbors())
-    def test_h_flip(self, neighbors):
+    def test_y_flip(self, neighbors):
         t = TileConnection(neighbors)
         t2 = t.__copy__()
-        assert t2.hFlip().hFlip() == t
-        assert t2.hFlip() == t.hFlip()
+        assert t2.yFlip().yFlip() == t
+        assert t2.yFlip() == t.yFlip()
 
     @pytest.mark.parametrize("neighbors", correct_neighbors())
     def test_flip_rot_sanity(self, neighbors):
         t = TileConnection(neighbors)
         t2 = t.__copy__()
-        assert t.rot().rot() == t2.hFlip().vFlip()
+        assert t.rot().rot() == t2.yFlip().xFlip()
 
     @pytest.mark.parametrize("expected, neighbors", [
         [[0], [0] * 8],

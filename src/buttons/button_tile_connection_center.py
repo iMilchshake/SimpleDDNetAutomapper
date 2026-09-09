@@ -19,8 +19,8 @@ class TileConnectionCenterButton(TileConnectionButton):
         self._num_states = 2  # this tile can only be full or empty
         layout = QGridLayout()
         checkbox_contents = [
-            ["V-Flip", "Allow center tile to be flipped vertically"],
-            ["H-Flip", "Allow center tile to be flipped horizontally"],
+            ["X-Flip", "Allow center tile to be flipped horizontally (left <-> right)"],
+            ["Y-Flip", "Allow center tile to be flipped vertically (top <-> bottom)"],
             ["Rotate", "Allow center tile to be rotated"],
             ["Empty", "Allow center tile to be placed on empty blocks"],
         ]
@@ -32,13 +32,13 @@ class TileConnectionCenterButton(TileConnectionButton):
             layout.addWidget(widget, i // 2, i % 2)
 
         # these are maybe not required but nice to have
-        self.box_v_flip = self.checkboxes[0]
-        self.box_h_flip = self.checkboxes[1]
+        self.box_x_flip = self.checkboxes[0]
+        self.box_y_flip = self.checkboxes[1]
         self.box_rot = self.checkboxes[2]
         self.box_empty = self.checkboxes[3]
 
-        self.box_v_flip.stateChanged.connect(self.updateVFlip)
-        self.box_h_flip.stateChanged.connect(self.updateHFlip)
+        self.box_x_flip.stateChanged.connect(self.updateXFlip)
+        self.box_y_flip.stateChanged.connect(self.updateYFlip)
         self.box_rot.stateChanged.connect(self.updateRot)
         self.box_empty.stateChanged.connect(self.updateEmpty)
 
@@ -60,18 +60,18 @@ class TileConnectionCenterButton(TileConnectionButton):
 
     def setTile(self, tile: Optional["Tile"], update_neighbors=True):
         self._tile = tile
-        self.box_h_flip.setCheckState(tile.tile_data.mods.can_h_flip)
-        self.box_v_flip.setCheckState(tile.tile_data.mods.can_v_flip)
+        self.box_y_flip.setCheckState(tile.tile_data.mods.can_y_flip)
+        self.box_x_flip.setCheckState(tile.tile_data.mods.can_x_flip)
         self.box_rot.setCheckState(tile.tile_data.mods.can_rot)
         self.box_empty.setCheckState(tile.tile_data.status.empty)
         self.update()
 
-    def updateVFlip(self, _):
-        value = self.box_v_flip.isChecked()
+    def updateXFlip(self, _):
+        value = self.box_x_flip.isChecked()
         self.signal_emitter.modification_signal.emit(0, value)
 
-    def updateHFlip(self, _):
-        value = self.box_h_flip.isChecked()
+    def updateYFlip(self, _):
+        value = self.box_y_flip.isChecked()
         self.signal_emitter.modification_signal.emit(1, value)
 
     def updateRot(self, _):
