@@ -3,6 +3,7 @@ from functools import cache
 from typing import TYPE_CHECKING, List, Optional
 
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QCursor
 from PyQt6.QtWidgets import QDialog, QGridLayout, QDialogButtonBox
 
 from src.buttons.button_tile_connection import TileConnectionButton
@@ -74,6 +75,23 @@ class TileSettingsDialog(QDialog):
         # update tiles
         for i in range(EIGHT_NEIGHBORS):
             self._updateTile(i)
+
+    def keyPressEvent(self, e):
+        widget = self.childAt(self.mapFromGlobal(QCursor.pos()))
+        if widget not in self.buttons:
+            super().keyPressEvent(e)
+            return
+
+        # set state using numeric keys (both top-numbers and numpad keys)
+        match e.key():
+            case Qt.Key.Key_1:
+                widget.setState(0)  # EMPTY
+            case Qt.Key.Key_2:
+                widget.setState(1)  # FULL
+            case Qt.Key.Key_3:
+                widget.setState(2)  # ANY
+            case _:
+                super().keyPressEvent(e)
 
     def onConnectionButtonClick(self, button_id: int):
         # goal: update tile after a button was clicked

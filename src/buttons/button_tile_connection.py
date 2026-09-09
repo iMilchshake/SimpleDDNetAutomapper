@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-from PyQt6.QtCore import QPoint
+from PyQt6.QtCore import QPoint, Qt
 from PyQt6.QtGui import QPainter, QPolygon, QRegion, QPixmap, QColor, QPen
 from PyQt6.QtWidgets import QAbstractButton
 
@@ -16,6 +16,8 @@ class TileConnectionButton(QAbstractButton):
     """
     dir: orientation to the next connection, 0 is up, 2 is right (clockwise)
     """
+
+    hover_width = 2
 
     def __init__(self, button_id, parent=None):
         super().__init__(parent)
@@ -37,6 +39,7 @@ class TileConnectionButton(QAbstractButton):
 
         self._paintTile(qp)
         self._paintOutline(qp)
+        self._paintHover(qp)
         self._paintText(qp)
         qp.end()
 
@@ -61,12 +64,21 @@ class TileConnectionButton(QAbstractButton):
     def _paintOutline(self, qp: QPainter):
         return
 
-    def _paintText(self, qp: QPainter):
+    def _paintHover(self, qp: QPainter):
+        if not self.underMouse():
+            return
         size = self.size()
+        qp.setPen(QPen(QColor(255, 190, 0, 255), self.hover_width))
+        inset = self.hover_width // 2
+        qp.drawRect(inset, inset,
+                    size.width() - self.hover_width,
+                    size.height() - self.hover_width)
+
+    def _paintText(self, qp: QPainter):
         # draw text
         state_text = "EMPTY" if self._state == 0 else ("FULL" if self._state == 1 else "ANY")
         qp.setPen(QPen(QColor(0, 0, 0, 255), 1))
-        qp.drawText(1, size.height() // 2, state_text)
+        qp.drawText(self.rect(), int(Qt.AlignmentFlag.AlignCenter), state_text)
 
     def _findPixmap(self) -> Optional[QPixmap]:
         if self._state != 0:
@@ -80,6 +92,26 @@ class TileConnectionButton(QAbstractButton):
 
     def nextCheckState(self):
         self.setState(self._state + 1)
+
+    def previousCheckState(self):
+        self.setState(self._state - 1)
+
+    def mouseReleaseEvent(self, e):
+        if not self.hitButton(e.position().toPoint()):
+            return  # cursor left the button, cancel
+        match e.button():
+            case Qt.MouseButton.LeftButton:
+                self.nextCheckState()
+            case Qt.MouseButton.RightButton:
+                self.previousCheckState()
+
+    def enterEvent(self, e):
+        self.update()
+        super().enterEvent(e)
+
+    def leaveEvent(self, e):
+        self.update()
+        super().leaveEvent(e)
 
     def setTile(self, tile: Optional["Tile"], update_neighbors=True):
         if self._tile and tile and \
@@ -100,6 +132,7 @@ class TileConnectionButton(QAbstractButton):
             self._state = state
             self._state %= self._num_states  # Tri state button
             self._update_neighborhood()
+            self.update()
 
     def _update_neighborhood(self):
         self.signal_emitter.neighbor_signal.emit(self.button_id)
