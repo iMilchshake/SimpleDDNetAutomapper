@@ -19,7 +19,7 @@ class AppState:
 
     def _init(self):
         self.rule_manager: RuleManager = RuleManager()
-        self.main_image_path: Optional[str] = None
+        self.main_image_path: Optional[Path] = None
         self.signal_emitter = ApplicationStatusEmitter()
 
     @classmethod
@@ -30,7 +30,7 @@ class AppState:
         return cls._instance
 
     @classmethod
-    def imagePath(cls):
+    def imagePath(cls) -> Optional[Path]:
         return cls.instance().main_image_path
 
     @classmethod
@@ -38,18 +38,18 @@ class AppState:
         return cls.instance().rule_manager
 
     @classmethod
-    def setImagePath(cls, image_path):
+    def setImagePath(cls, image_path: Path):
         cls.instance().main_image_path = image_path
-        cls.instance().rule_manager.loadRules(Path(image_path).stem)
+        cls.instance().rule_manager.loadRules(image_path.stem)
         cls.instance().signal_emitter.application_status_signal.emit(
             ApplicationStatusEnum.IMAGE_LOADED,
-            f"image loaded: {str(image_path)}")
+            f"image loaded: {image_path}")
 
     @classmethod
     def reset(cls):
         # do not call _init here, don't overwrite the signal emitter, reset manually
         cls.instance().rule_manager: RuleManager = RuleManager()
-        cls.instance().main_image_path: Optional[str] = None
+        cls.instance().main_image_path: Optional[Path] = None
         cls.instance().signal_emitter.application_status_signal.emit(
             ApplicationStatusEnum.RESET_APP,
             "Reset rules and images")

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QFileDialog
 from PyQt6.QtGui import QPixmap
 
@@ -35,15 +37,17 @@ class ImageSelectorWidget(QWidget):
         if file_dialog.exec():
             selected_files = file_dialog.selectedFiles()
             if selected_files:
-                image_path = selected_files[0]
-                pixmap = QPixmap(image_path)
-                if AppState.imagePath():
-                    AppState.reset()  # reset app before loading new, calls self.reset somewhere
-                if not pixmap.isNull():
-                    self.image_label.setPixmap(pixmap)
-                    AppState.setImagePath(image_path)
-                # else:
-                #    self.image_label.setText("Invalid image file")
+                self.loadImage(Path(selected_files[0]))
+
+    def loadImage(self, image_path: Path) -> bool:
+        pixmap = QPixmap(str(image_path))
+        if pixmap.isNull():
+            return False
+        if AppState.imagePath():
+            AppState.reset()  # reset app before loading new, calls self.reset somewhere
+        self.image_label.setPixmap(pixmap)
+        AppState.setImagePath(image_path)
+        return True
 
     def reset(self):
         old = self.image_label

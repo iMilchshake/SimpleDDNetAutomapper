@@ -111,7 +111,7 @@ class MapperGeneratorWidget(QWidget):
         cmd = CheckMapDialog(self, title=f"Do you want to save your mapping rule '{rule_name}'?", cancel=True)
         ret = cmd.exec()
         if ret:
-            loaded_image_path = Path(AppState.imagePath())
+            loaded_image_path = AppState.imagePath()
             filename = f"{loaded_image_path.stem}.rules"
             AppState.ruleManager().saveRule(filename, rule_name)
 
@@ -166,7 +166,7 @@ class MapperGeneratorWidget(QWidget):
 
         data_path = ConfigManager.config()["data_path"]
         if data_path:
-            loaded_image_path = Path(AppState.imagePath())
+            loaded_image_path = AppState.imagePath()
             filename = f"{loaded_image_path.stem}.rules"
             AppState.ruleManager().saveRule(filename, rule_name)
 

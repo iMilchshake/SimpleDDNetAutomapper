@@ -4,7 +4,6 @@ import twmap
 import numpy as np
 from src.backend.tile_status import TileStatus
 from src.config.app_state import AppState
-from pathlib import Path
 from src.dialogs.dialog_check_map import CheckMapDialog
 
 
@@ -22,7 +21,7 @@ class MapGenerator:
 
         # add image
         assert AppState.imagePath()
-        path = Path(AppState.imagePath()).absolute()
+        path = AppState.imagePath().absolute()
         self._map.images.new_from_file(str(path))
 
         # set physic tiles
