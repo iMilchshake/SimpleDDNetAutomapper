@@ -62,6 +62,7 @@ class MainWindow(QMainWindow):
 
     def openSettings(self):
         ConfigSettingsDialog(self).exec()
+        self.mapper_generator.widget().refreshClientButton()
 
     def showAbout(self):
         QMessageBox.about(self, 'About', 'This is a PyQt6 menu example.')

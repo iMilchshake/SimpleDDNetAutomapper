@@ -7,7 +7,8 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QRadioButton, QLa
 from PyQt6.QtGui import QPixmap, QRegularExpressionValidator
 from PyQt6.QtCore import QRegularExpression
 
-from src.config.app_state import AppState, ApplicationStatusEnum
+from src.config.app_state import AppState
+from src.signals.signal_emitter import ApplicationStatusEnum
 from src.dialogs.dialog_check_map import CheckMapDialog
 from src.config.config_manager import ConfigManager
 from src.backend.map_generator import MapGenerator
@@ -61,8 +62,7 @@ class MapperGeneratorWidget(QWidget):
         # check map with ddnet
         self.ddnet_push_button = QPushButton("Check mapping rules with ddnet")
         self.layout.addWidget(self.ddnet_push_button)
-        if ConfigManager.instance().config()["client_path"] is None:
-            self.ddnet_push_button.setDisabled(True)
+        self.refreshClientButton()
 
         # spacer
         self.layout.addStretch(1)
@@ -92,6 +92,9 @@ class MapperGeneratorWidget(QWidget):
         # https://github.com/ddnet/ddnet/blob/c7dc7b6a94528040678b7a0fab17ccb447e1d94d/src/game/editor/auto_map.h#L52
         self.new_mapper_line_edit.setMaxLength(128)  # limit number of characters
 
+    def refreshClientButton(self):
+        self.ddnet_push_button.setEnabled(bool(ConfigManager.config()["client_path"]))
+
     def startRuleGeneration(self):
         if self.radio_buttons[0].isChecked():
             rule_name = self.new_mapper_line_edit.text()
@@ -100,6 +103,10 @@ class MapperGeneratorWidget(QWidget):
 
         if not AppState.imagePath() or not rule_name or not len(rule_name):
             AppState.setStatus(ApplicationStatusEnum.WARNING, "You can't generate without a rule name")
+            return
+        if not ConfigManager.config()["data_path"]:
+            AppState.setStatus(ApplicationStatusEnum.WARNING,
+                               "No ddnet data directory configured, cannot save rule. Set it in Settings.")
             return
         cmd = CheckMapDialog(self, title=f"Do you want to save your mapping rule '{rule_name}'?", cancel=True)
         ret = cmd.exec()
@@ -138,25 +145,40 @@ class MapperGeneratorWidget(QWidget):
         self._updateGenerateButton()
 
     @BroadErrorHandler(logger)
-    def startDDNetCheck(self):
-        # TODO
-        # generate Map
-        # add tmp mapping rule
-        # automap map with debroijn torus
-        # open map with ddnet
-        date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-        map_name = f"map_{date_str}.map"
+    def startDDNetCheck(self, checked=False):
+        if not AppState.imagePath():
+            AppState.setStatus(ApplicationStatusEnum.WARNING, "Load a tileset image first.")
+            return
 
-        temp_dir = Path(tempfile.gettempdir())
-        temp_dir_simple_ddnet = temp_dir.joinpath(Path("simple_ddnet"))
-        temp_dir_simple_ddnet.mkdir(exist_ok=True)
-        file_path = str(temp_dir.joinpath(Path(map_name)))
-        MapGenerator(file_path)
-
-        client_path = ConfigManager.instance().config()["client_path"]
+        client_path = ConfigManager.config()["client_path"]
         if not client_path:
             self.ddnet_push_button.setDisabled(True)
+            AppState.setStatus(ApplicationStatusEnum.WARNING, "No ddnet client configured. Set it in Settings.")
             return
+
+        # get rule name and save rules to automap dir
+        if self.radio_buttons[0].isChecked():
+            rule_name = self.new_mapper_line_edit.text()
+        else:
+            rule_name = self.existing_mapper_combobox.currentText()
+        if not rule_name:
+            rule_name = "ddnet_check"
+
+        data_path = ConfigManager.config()["data_path"]
+        if data_path:
+            loaded_image_path = Path(AppState.imagePath())
+            filename = f"{loaded_image_path.stem}.rules"
+            AppState.ruleManager().saveRule(filename, rule_name)
+
+        # generate map
+        date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+        map_name = f"map_{date_str}.map"
+        temp_dir = Path(tempfile.gettempdir())
+        temp_dir_simple_ddnet = temp_dir.joinpath(Path("simple_ddnet"))
+        temp_dir_simple_ddnet.mkdir(parents=True, exist_ok=True)
+        file_path = str(temp_dir_simple_ddnet.joinpath(Path(map_name)))
+        MapGenerator(file_path)
+
         cmd = [client_path, file_path]
         subprocess.Popen(cmd, start_new_session=True)
 

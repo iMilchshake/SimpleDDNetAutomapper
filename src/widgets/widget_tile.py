@@ -124,11 +124,17 @@ class Tile(BaseTile):
             self._scanCornersAndEdges()
 
     def _scanImageAnyAlpha(self):
-        for y in range(self.image.height()):
-            for x in range(self.image.width()):
-                val = self.image.pixel(x, y)  # this is fucking inefficient, but nothing else worked
-                alpha = (val & 0xFF000000) >> 24
-                if alpha > 0:
+        if not self.image:
+            return
+        img = self.image.convertToFormat(QImage.Format.Format_ARGB32)
+        bpl = img.bytesPerLine()
+        width = img.width()
+        buf = img.constBits().asarray(bpl * img.height())
+        # Format_ARGB32 in memory (little-endian) is B,G,R,A per pixel, so alpha is byte index 3
+        for y in range(img.height()):
+            row_start = y * bpl
+            for x in range(width):
+                if buf[row_start + x * 4 + 3] != 0:
                     self.lock = False
                     return
 

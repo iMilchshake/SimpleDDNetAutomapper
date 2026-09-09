@@ -55,8 +55,8 @@ class ConfigManager:
 
         data = {
             'version': "1.0.0",
-            'client_path': str(client_path),
-            'data_path': str(data_path),
+            'client_path': client_path,
+            'data_path': data_path,
         }
         self._config = data
 

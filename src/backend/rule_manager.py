@@ -23,7 +23,11 @@ class RuleManager:
             filename = f"{filename_base}.rules"
             data_path = ConfigManager.config()["data_path"]
             if not data_path:
-                raise ValueError("No editor directory path known")
+                logger.warning("No data directory configured, skipping rule load")
+                self._config = {}
+                self._header = []
+                self._loadedRules = True
+                return
             data_path = Path(data_path)
 
             automapper_path = data_path.joinpath(Path("editor/automap"))
@@ -121,7 +125,7 @@ class RuleManager:
         filename = f"{filename_base}.rules"
         data_path = ConfigManager.config()["data_path"]
         if not data_path:
-            full_path = filename  # save at root directory
+            raise ValueError("No editor directory path known, cannot save rules")
         else:
             automap_path = Path(data_path).joinpath(Path("editor/automap"))
             if not automap_path.exists():

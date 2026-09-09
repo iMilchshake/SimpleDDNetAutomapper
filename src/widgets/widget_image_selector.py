@@ -46,6 +46,8 @@ class ImageSelectorWidget(QWidget):
                 #    self.image_label.setText("Invalid image file")
 
     def reset(self):
-        self.layout().removeWidget(self.image_label)
+        old = self.image_label
+        self.layout().removeWidget(old)
+        old.deleteLater()
         self.image_label = TileClicker(self)
         self.layout().addWidget(self.image_label)

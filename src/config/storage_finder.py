@@ -87,7 +87,7 @@ class StorageFinder(StorageFinderBase):
         if self.client_path:
             return Path(self.client_path)
         else:
-            self._findClient(self.data_path, sys.platform)
+            self.client_path = self._findClient(self.data_path, sys.platform)
             if self.client_path:  # don't recurse here
                 return Path(self.client_path)
         return None
@@ -118,9 +118,33 @@ class StorageFinder(StorageFinderBase):
 
     @staticmethod
     def _findClient(data_path, os_name):
-        if data_path:
-            pattern = "ddnet.exe" if os_name in ["win32", "cygwin"] else "ddnet*"
-            for p in Path(data_path).parent.glob(pattern):
-                if p.is_file():
+        if not data_path:
+            return None
+        parent = Path(data_path).parent
+        is_win = os_name in ["win32", "cygwin"]
+        try:
+            entries = sorted(parent.iterdir())
+        except OSError:
+            return None
+        fallback = None
+        for p in entries:
+            try:
+                if not p.is_file():
+                    continue
+            except OSError:
+                continue
+            name = p.name
+            lowered = name.lower()
+            if is_win:
+                if lowered == "ddnet.exe":
                     return p
-        return None
+                continue
+            if not lowered.startswith("ddnet"):
+                continue
+            if "server" in lowered or "dedicated" in lowered:
+                continue
+            if lowered == "ddnet":
+                return p
+            if fallback is None:
+                fallback = p
+        return fallback

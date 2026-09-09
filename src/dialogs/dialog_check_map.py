@@ -34,8 +34,8 @@ class CheckMapDialog(QDialog):
 
         # calculate tile size
         desktop_size = QApplication.primaryScreen().size()
-        size_height_rows = 18 + 1 + 1  # height of map + buttons + buffer
-        size_width_cols = 34 + 1  # width of map + buffer
+        size_height_rows = height + 1 + 1  # height of map + buttons + buffer
+        size_width_cols = width + 1  # width of map + buffer
         value = min(desktop_size.height() / size_height_rows, desktop_size.width() / size_width_cols)
         tile_size = int(min(max(32, value), 64))
 
